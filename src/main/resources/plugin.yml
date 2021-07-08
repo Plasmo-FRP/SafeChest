@@ -1,0 +1,6 @@
+name: Safechest
+version: ${project.version}
+main: org.venterok.safechest.Safechest
+api-version: 1.17
+authors: [ Venterok ]
+description: A plugin to secure players chests

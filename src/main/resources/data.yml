@@ -1,0 +1,14 @@
+#ID - dd-M-yyyy-id
+#Coordinates
+#Block type
+#Lock creator
+
+20_80_20:
+  id: 0703202101
+  type: CHEST
+  creator: Venterok
+
+010119702:
+  coordinates: 20 80 20
+  type: CHEST
+  creator: Venterok

@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.meta.ItemMeta
+import org.venterok.safechest.SafeChest.Companion.formatColor
 import org.venterok.safechest.objects.ConfigVal.Companion.config
 import org.venterok.safechest.objects.DataHelp.Companion.cacheChest
 import org.venterok.safechest.objects.DataHelp.Companion.checkFileExists
@@ -31,8 +33,9 @@ class InteractionEvent : Listener {
     fun lockChest( e: PlayerInteractEvent ) {
         if (e.clickedBlock!!.type != Material.BARREL) return
         val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
-        if (!cacheChest.contains(coords)) return
+        if (cacheChest.contains(coords)) return
         val pl = e.player
+
         val handItem = pl.inventory.itemInMainHand
         if (handItem.itemMeta?.displayName != config.getString("itemOptions.lock-item-name")) return
 
@@ -44,7 +47,7 @@ class InteractionEvent : Listener {
         chestFileSet(coords, newID, pl.name, false)
         cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, newID, false)
 
-        pl.sendMessage(config.getString("message.lock-setup")!!.replace("{id}", newID.toString()))
+        pl.sendMessage(formatColor(config.getString("message.lock-setup")!!.replace("{id}", newID.toString())))
 
         e.isCancelled = true
     }
@@ -59,13 +62,29 @@ class InteractionEvent : Listener {
         if (!cacheChest[coords]!!.kc) return
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.lore == null) return
 
-        handItem.itemMeta!!.lore!!.add(cacheChest[coords]!!.id.toString())
-        handItem.itemMeta!!.addEnchant(Enchantment.LOYALTY, 1, true)
+        val meta: ItemMeta? = handItem.itemMeta
+        meta!!.lore!!.add(cacheChest[coords]!!.id.toString())
+        meta.addEnchant(Enchantment.LOYALTY, 1, true)
+        handItem.itemMeta = meta
+
         cacheChest[coords]!!.kc = true
         chestInfoGet().set("$coords.key-created-before", true)
 
-        pl.sendMessage(config.getString("message.key-setup")!!.replace("{id}", cacheChest[coords]!!.id.toString()))
+        pl.sendMessage(formatColor(config.getString("message.key-setup")!!.replace("{id}", cacheChest[coords]!!.id.toString())))
 
         e.isCancelled = true
+    }
+    @EventHandler
+    fun openChest( e: PlayerInteractEvent ) {
+        if (e.clickedBlock!!.type != Material.BARREL) return
+        val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
+        if (!cacheChest.contains(coords)) return
+        if (!cacheChest[coords]!!.kc) return
+
+        val pl = e.player
+        val handItem = pl.inventory.itemInMainHand
+        if (handItem.itemMeta?.lore?.contains(cacheChest[coords]!!.id.toString()) != true) {
+            pl.sendMessage(formatColor(config.getString("message.chest-closed")!!))
+            return}
     }
 }

@@ -7,9 +7,9 @@ itemOptions:
 message:
   lock-setup: "Замок установлен с {id}"
   key-setup: "Ключ привязан к {id}"
-  chest-closed: "Сундук закрыт"
+  chest-closed: "Хранилище закрыто, возьмите нужный ключ."
 
 options:
-  can-open-unregister-chest: false
-  chest-creator-can-register-many-keys: false
+  can-open-unregister-chest: true
+
 

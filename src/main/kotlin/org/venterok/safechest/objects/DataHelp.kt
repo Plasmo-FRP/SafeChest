@@ -25,13 +25,19 @@ class DataHelp {
         fun chestFileSet(coords: String, id: Int, pl: String, kc: Boolean) {
             val file = File("$path/data.yml")
             val data = YamlConfiguration.loadConfiguration(file)
-            //TODO Set info to data.yml
+
+            data.set("$coords.$id", id)
+            data.set("$coords.creator", pl)
+            data.set("$coords.key-created-before", kc)
+            data.set("$coords.key-creator", "Nothing")
+            data.save(file)
         }
         fun chestRemove(name: String,){
             val file = File("$path/data.yml")
             val data = YamlConfiguration.loadConfiguration(file)
-            val list = data.getConfigurationSection("")!!.getKeys(false)
-            //TODO Remove info from data.yml
+
+            data.set(name, null)
+            data.save(file)
         }
     }
 }

@@ -1,14 +1,21 @@
 package org.venterok.safechest
 
 import net.md_5.bungee.api.ChatColor
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import org.venterok.safechest.utils.InteractionEvent
+import org.venterok.safechest.utils.BlockBreakEvent
 import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class SafeChest : JavaPlugin() {
     override fun onEnable() {
-        // Plugin startup logic
+        inst = this
+
+        configFile = setUpConfig()
+        Bukkit.getPluginManager().registerEvents(InteractionEvent(), this)
+        Bukkit.getPluginManager().registerEvents(BlockBreakEvent(), this)
     }
 
     override fun onDisable() {

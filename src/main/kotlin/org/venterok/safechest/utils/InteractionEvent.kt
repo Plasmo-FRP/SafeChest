@@ -36,11 +36,7 @@ class InteractionEvent : Listener {
 
         if (handItem.itemMeta?.lore?.contains(cacheChest[coords]!!.id) == true) return
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.lock-item-name")) {
-            e.isCancelled = true
-            return
-        }
-        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.lore?.contains(cacheChest[coords]!!.id) == false) {
-            pl.sendMessage(formatColor(config.getString("message.key-already-bound")!!))
+            pl.sendMessage(formatColor(config.getString("message.lock-already-bound")!!))
             e.isCancelled = true
             return
         }

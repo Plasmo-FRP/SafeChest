@@ -5,10 +5,6 @@
 
 20_80_20:
   id: 0703202101
-  type: CHEST
   creator: Venterok
-
-010119702:
-  coordinates: 20 80 20
-  type: CHEST
-  creator: Venterok
+  key-created-before: true
+  key-creator: true

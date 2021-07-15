@@ -3,19 +3,16 @@ package org.venterok.safechest.utils
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-class PlayerChest(val pl: Player, val coords: Location, val id: Int) {
+class PlayerChest(val loc: Location, val id: Int, var kc: Boolean) {
 
-    fun getPlayer(): Player {
-        return pl
-    }
     fun getLocation(): Location {
-        return coords
+        return loc
     }
     fun getChestId(): Int {
         return id
     }
-    fun save() {
-
+    fun getKeyCreated(): Boolean {
+        return kc
     }
 
 }

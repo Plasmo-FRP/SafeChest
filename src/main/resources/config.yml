@@ -1,13 +1,13 @@
 itemOptions:
-  key-item: PAPER
-  lock-item: PAPER
+  lock-item-name: "&rЗамок"
+  key-item-name: "&rКлюч"
   id-formate: dd-M-yyyy-id
-  id-line: "номер - {id}"
   creator-line: "создал - {nick}"
 
 message:
-  lock-settup: "Замок установлен с {id}"
-  key-settup: "Ключ привязан к {id}"
+  lock-setup: "Замок установлен с {id}"
+  key-setup: "Ключ привязан к {id}"
+  chest-closed: "Сундук закрыт"
 
 options:
   can-open-unregister-chest: false

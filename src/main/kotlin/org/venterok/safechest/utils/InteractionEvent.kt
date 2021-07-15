@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.meta.ItemMeta
-import org.venterok.safechest.SafeChest.Companion.formatColor
+import org.venterok.safechest.Safechest.Companion.formatColor
 import org.venterok.safechest.objects.ConfigVal.Companion.config
 import org.venterok.safechest.objects.DataHelp.Companion.cacheChest
 import org.venterok.safechest.objects.DataHelp.Companion.checkFileExists
@@ -19,19 +19,37 @@ import kotlin.random.Random
 class InteractionEvent : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun dataAddAndCheck( e: PlayerInteractEvent ) {
-        if (e.clickedBlock!!.type != Material.BARREL) return
+        if (e.clickedBlock?.type != Material.BARREL) return
         val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
         if (cacheChest.containsKey(coords)) return
-        if (checkFileExists(coords)) return
+        if (!checkFileExists(coords)) return
 
-        val id = chestInfoGet().getInt("$coords.id")
+        val id = chestInfoGet().getString("$coords.id")!!
         val status = chestInfoGet().getBoolean("$coords.key-created-before")
         cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, id, status)
 
+        if (!cacheChest[coords]!!.kc) return
+
+        val pl = e.player
+        val handItem = pl.inventory.itemInMainHand
+        println(handItem.itemMeta?.displayName)
+
+        if (handItem.itemMeta?.lore?.contains(cacheChest[coords]!!.id) == true) return
+        if (handItem.itemMeta?.displayName == config.getString("itemOptions.lock-item-name")) {
+            e.isCancelled = true
+            return
+        }
+        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.lore?.contains(cacheChest[coords]!!.id) == false) {
+            pl.sendMessage(formatColor(config.getString("message.key-already-bound")!!))
+            e.isCancelled = true
+            return
+        }
+        pl.sendMessage(formatColor(config.getString("message.chest-closed")!!))
+        e.isCancelled = true
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     fun lockChest( e: PlayerInteractEvent ) {
-        if (e.clickedBlock!!.type != Material.BARREL) return
+        if (e.clickedBlock?.type != Material.BARREL) return
         val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
         if (cacheChest.contains(coords)) return
         val pl = e.player
@@ -42,7 +60,7 @@ class InteractionEvent : Listener {
         pl.inventory.removeItem(handItem)
         pl.updateInventory()
 
-        val newID = "${LocalDateTime.now().nano}${Random.nextInt(1, 100000)}".toInt()
+        val newID = "${System.currentTimeMillis()}"
 
         chestFileSet(coords, newID, pl.name, false)
         cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, newID, false)
@@ -51,41 +69,39 @@ class InteractionEvent : Listener {
 
         e.isCancelled = true
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     fun keyRegister( e: PlayerInteractEvent ) {
-        if (e.clickedBlock!!.type != Material.BARREL) return
+        if (e.clickedBlock?.type != Material.BARREL) return
         val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
         if (!cacheChest.contains(coords)) return
 
         val pl = e.player
         val handItem = pl.inventory.itemInMainHand
-        if (!cacheChest[coords]!!.kc) return
-        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.lore == null) return
+        println(handItem.itemMeta?.displayName)
+        if (cacheChest[coords]!!.kc) return
 
-        val meta: ItemMeta? = handItem.itemMeta
-        meta!!.lore!!.add(cacheChest[coords]!!.id.toString())
-        meta.lore!!.add(formatColor(config.getString("itemOptions.creator-line")!!.replace("{player}", "$pl")))
-        meta.addEnchant(Enchantment.LOYALTY, 1, true)
-        handItem.itemMeta = meta
+        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.lore == null) {
 
-        cacheChest[coords]!!.kc = true
-        chestInfoGet().set("$coords.key-created-before", true)
+            val meta: ItemMeta? = handItem.itemMeta
+            if (meta != null) {
+                meta.lore?.add(cacheChest[coords]!!.id.toString())
+                meta.lore?.add(formatColor(config.getString("itemOptions.creator-line")!!.replace("{player}", "$pl")))
+                meta.addEnchant(Enchantment.LOYALTY, 1, true)
+                handItem.itemMeta = meta
+            }
 
-        pl.sendMessage(formatColor(config.getString("message.key-setup")!!.replace("{id}", cacheChest[coords]!!.id.toString())))
+            pl.updateInventory()
 
-        e.isCancelled = true
-    }
-    @EventHandler
-    fun openChest( e: PlayerInteractEvent ) {
-        if (e.clickedBlock!!.type != Material.BARREL) return
-        val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
-        if (!cacheChest.contains(coords)) return
-        if (!cacheChest[coords]!!.kc) return
+            cacheChest[coords]!!.kc = true
+            chestInfoGet().set("$coords.key-created-before", true)
 
-        val pl = e.player
-        val handItem = pl.inventory.itemInMainHand
-        if (handItem.itemMeta?.lore?.contains(cacheChest[coords]!!.id.toString()) != true) {
-            pl.sendMessage(formatColor(config.getString("message.chest-closed")!!))
-            return}
+            pl.sendMessage(formatColor(config.getString("message.key-setup")!!.replace("{id}", cacheChest[coords]!!.id)))
+
+            e.isCancelled = true
+        }
+        else {
+            e.isCancelled = true
+            return
+        }
     }
 }

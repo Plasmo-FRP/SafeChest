@@ -1,12 +1,13 @@
 itemOptions:
-  lock-item-name: "&rЗамок"
-  key-item-name: "&rКлюч"
+  lock-item-name: "Замок"
+  key-item-name: "Ключ"
   creator-line: "создал - {nick}"
 
 message:
   lock-setup: "Замок установлен с {id}"
   key-setup: "Ключ привязан к {id}"
   chest-closed: "Хранилище закрыто, возьмите нужный ключ."
+  key-already-bound: "Ты кто? ключ уже привязан, даун"
 
 options:
   can-open-unregister-chest: true

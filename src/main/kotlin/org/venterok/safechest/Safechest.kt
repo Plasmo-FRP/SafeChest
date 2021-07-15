@@ -2,20 +2,28 @@ package org.venterok.safechest
 
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
+import org.venterok.safechest.objects.DataHelp
 import org.venterok.safechest.utils.InteractionEvent
 import org.venterok.safechest.utils.BlockBreakEvent
 import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-class SafeChest : JavaPlugin() {
+class Safechest : JavaPlugin() {
     override fun onEnable() {
         inst = this
 
         configFile = setUpConfig()
         Bukkit.getPluginManager().registerEvents(InteractionEvent(), this)
         Bukkit.getPluginManager().registerEvents(BlockBreakEvent(), this)
+
+        val path = inst!!.dataFolder
+        val file = File("$path/data.yml")
+        val data = YamlConfiguration.loadConfiguration(file)
+        data.set("amongus", true)
+        data.save(file)
     }
 
     override fun onDisable() {
@@ -34,7 +42,7 @@ class SafeChest : JavaPlugin() {
             }
             return ChatColor.translateAlternateColorCodes('&', msg)
         }
-        var inst: SafeChest? = null
+        var inst: Safechest? = null
     }   
     private fun setUpConfig(): File {
         val config = File(dataFolder.toString() + File.separator + "config.yml")

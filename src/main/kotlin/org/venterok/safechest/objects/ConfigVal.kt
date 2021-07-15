@@ -1,9 +1,9 @@
 package org.venterok.safechest.objects
 
-import org.venterok.safechest.SafeChest
+import org.venterok.safechest.Safechest
 
 class ConfigVal {
     companion object {
-        val config = SafeChest.inst!!.config
+        val config = Safechest.inst!!.config
     }
 }

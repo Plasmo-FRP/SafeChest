@@ -19,6 +19,5 @@ class blockBreakEvent : Listener {
         else cacheChest.remove(coords)
         if (!checkFileExists(coords)) return
         else chestRemove(coords)
-
     }
 }

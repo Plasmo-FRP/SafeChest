@@ -64,6 +64,7 @@ class InteractionEvent : Listener {
 
         val meta: ItemMeta? = handItem.itemMeta
         meta!!.lore!!.add(cacheChest[coords]!!.id.toString())
+        meta.lore!!.add(formatColor(config.getString("itemOptions.creator-line")!!.replace("{player}", "$pl")))
         meta.addEnchant(Enchantment.LOYALTY, 1, true)
         handItem.itemMeta = meta
 

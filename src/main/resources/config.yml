@@ -1,7 +1,6 @@
 itemOptions:
   lock-item-name: "&rЗамок"
   key-item-name: "&rКлюч"
-  id-formate: dd-M-yyyy-id
   creator-line: "создал - {nick}"
 
 message:

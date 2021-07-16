@@ -1,6 +1,6 @@
 itemOptions:
   lock-item-name: "Замок"
-  key-item-name: "Ключ"
+  key-item-name: "Золотой ключ"
   creator-line: "создал - {nick}"
 
 message:

@@ -9,6 +9,7 @@ message:
   chest-closed: "#ED4343Хранилище закрыто, возьмите нужный ключ."
   key-already-bound: "#ED4343Ключ уже привязан"
   lock-already-bound: "#ED4343Замок уже привязан"
+  need-bind-key: "#ED4343Нужно привязать ключ"
 
 
 

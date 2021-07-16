@@ -53,7 +53,6 @@ class InteractionEvent : Listener {
             val status = chestInfoGet().getBoolean("$coords.key-created-before")
             cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, id, status)
         }
-
         //key-Already-Bound
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == true) {
             pl.sendMessage(formatColor(config.getString("message.key-already-bound")!!))
@@ -66,7 +65,6 @@ class InteractionEvent : Listener {
             e.isCancelled = true
             return
         }
-
         //keyRegister
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == false) {
             val meta: ItemMeta? = handItem.itemMeta
@@ -92,8 +90,15 @@ class InteractionEvent : Listener {
             return
         }
         else {
-            pl.sendMessage(formatColor(config.getString("message.chest-closed")!!))
-            e.isCancelled = true
+            if (cacheChest.containsKey(coords) && cacheChest[coords]?.kc == false) {
+                pl.sendMessage(formatColor(config.getString("message.need-bind-key")!!))
+                e.isCancelled = true
+            }
+            else {
+                pl.sendMessage(formatColor(config.getString("message.chest-closed")!!))
+                e.isCancelled = true
+            }
+
         }
     }
 }

@@ -5,6 +5,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.meta.ItemMeta
 import org.venterok.safechest.Safechest.Companion.formatColor
@@ -21,6 +22,8 @@ class InteractionEvent : Listener {
     fun mainEvent( e: PlayerInteractEvent ) {
         //MainEvent
         if (e.clickedBlock?.type != Material.BARREL) return
+        if (e.action != Action.RIGHT_CLICK_BLOCK) return
+
         val coords = "${e.clickedBlock!!.location.blockX}_${e.clickedBlock!!.location.blockY}_${e.clickedBlock!!.location.blockZ}"
         val pl = e.player
         val handItem = pl.inventory.itemInMainHand
@@ -41,6 +44,7 @@ class InteractionEvent : Listener {
             println("Привязал замок [$coords]")
 
             e.isCancelled = true
+            return
         }
 
         if (!checkFileExists(coords)) return
@@ -52,7 +56,7 @@ class InteractionEvent : Listener {
         }
 
         //key-Already-Bound
-        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && cacheChest[coords]?.kc == true) {
+        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == true) {
             pl.sendMessage(formatColor(config.getString("message.key-already-bound")!!))
             e.isCancelled = true
             return
@@ -85,10 +89,11 @@ class InteractionEvent : Listener {
             println("Привязал ключ {$coords}")
 
             e.isCancelled = true
+            return
         }
 
         //if item lore contains ID, the chest will be open
-        if (handItem.itemMeta?.lore?.contains(cacheChest[coords]) == true) {
+        if (handItem.itemMeta?.lore?.contains(cacheChest[coords]) == false) {
             return
         }
         else {

@@ -1,16 +1,14 @@
 itemOptions:
   lock-item-name: "Замок"
   key-item-name: "Золотой ключ"
-  creator-line: "создал - {nick}"
+  creator-line: "Создал - {player}"
 
 message:
-  lock-setup: "Замок установлен с {id}"
-  key-setup: "Ключ привязан к {id}"
-  chest-closed: "Хранилище закрыто, возьмите нужный ключ."
-  key-already-bound: "Ключ уже привязан"
-  lock-already-bound: "Замок уже привязан"
+  lock-setup: "#A5D856Замок установлен с #F2E9E4{id} #A5D856id"
+  key-setup: "#A5D856Ключ привязан к #F2E9E4{id} #A5D856id"
+  chest-closed: "#ED4343Хранилище закрыто, возьмите нужный ключ."
+  key-already-bound: "#ED4343Ключ уже привязан"
+  lock-already-bound: "#ED4343Замок уже привязан"
 
-options:
-  can-open-unregister-chest: true
 
 

@@ -14,6 +14,7 @@ import org.venterok.safechest.objects.DataHelp.Companion.cacheChest
 import org.venterok.safechest.objects.DataHelp.Companion.checkFileExists
 import org.venterok.safechest.objects.DataHelp.Companion.chestFileSet
 import org.venterok.safechest.objects.DataHelp.Companion.chestInfoGet
+import org.venterok.safechest.objects.DataHelp.Companion.chestKeyInfoSet
 
 
 class InteractionEvent : Listener {
@@ -40,8 +41,6 @@ class InteractionEvent : Listener {
             cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, newID, false)
 
             pl.sendMessage(formatColor(config.getString("message.lock-setup")!!.replace("{id}", newID.toString())))
-
-            println("Привязал замок [$coords]")
 
             e.isCancelled = true
             return
@@ -70,7 +69,6 @@ class InteractionEvent : Listener {
 
         //keyRegister
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == false) {
-
             val meta: ItemMeta? = handItem.itemMeta
             //TODO PlaceHolderApi Support
             val nickname = formatColor(config.getString("itemOptions.creator-line")!!).replace("{player}", pl.name)
@@ -81,12 +79,9 @@ class InteractionEvent : Listener {
             pl.updateInventory()
 
             cacheChest[coords]!!.kc = true
-            chestInfoGet().set("$coords.key-created-before", true)
-            chestInfoGet().set("$coords.key-creator", pl.name)
+            chestKeyInfoSet(coords, true, pl.name)
 
             pl.sendMessage(formatColor(config.getString("message.key-setup")!!.replace("{id}", cacheChest[coords]!!.id)))
-
-            println("Привязал ключ {$coords}")
 
             e.isCancelled = true
             return

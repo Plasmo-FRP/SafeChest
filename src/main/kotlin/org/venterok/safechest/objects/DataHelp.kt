@@ -21,6 +21,14 @@ class DataHelp {
             val file = File("$path/data.yml")
             return YamlConfiguration.loadConfiguration(file)
         }
+        fun chestKeyInfoSet(coords: String, nw: Boolean, nn: String) {
+            val file = File("$path/data.yml")
+            val data = YamlConfiguration.loadConfiguration(file)
+
+            data.set("$coords.key-created-before", nw)
+            data.set("$coords.key-creator", nn)
+            data.save(file)
+        }
         fun chestFileSet(coords: String, id: String, pl: String, kc: Boolean) {
             val file = File("$path/data.yml")
             val data = YamlConfiguration.loadConfiguration(file)

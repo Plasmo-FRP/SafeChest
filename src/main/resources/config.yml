@@ -1,7 +1,9 @@
 itemOptions:
   lock-item-name: "Замок"
-  key-item-name: "Золотой ключ"
-  creator-line: "Создал - {player}"
+  key-items-names:
+    -  "Золотой ключ"
+    -  "Медный ключ"
+  creator-in-lore: "Создал - {player}"
 
 message:
   lock-setup: "#A5D856Замок установлен с #F2E9E4{id} #A5D856id"

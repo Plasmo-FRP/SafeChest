@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.venterok.safechest.objects.DataHelp
 import org.venterok.safechest.utils.InteractionEvent
 import org.venterok.safechest.utils.BlockBreakEvent
+import org.venterok.safechest.utils.KeyCopy
 import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -18,11 +19,12 @@ class Safechest : JavaPlugin() {
         configFile = setUpConfig()
         Bukkit.getPluginManager().registerEvents(InteractionEvent(), this)
         Bukkit.getPluginManager().registerEvents(BlockBreakEvent(), this)
+        Bukkit.getPluginManager().registerEvents(KeyCopy(), this)
 
         val path = inst!!.dataFolder
         val file = File("$path/data.yml")
         val data = YamlConfiguration.loadConfiguration(file)
-        data.set("amongus", true)
+        data.set("created", true)
         data.save(file)
     }
 

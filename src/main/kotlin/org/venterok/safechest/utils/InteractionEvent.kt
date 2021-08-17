@@ -20,7 +20,7 @@ import org.venterok.safechest.objects.DataHelp.Companion.chestKeyInfoSet
 class InteractionEvent : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    fun mainEvent( e: PlayerInteractEvent ) {
+    fun barrelCheck( e: PlayerInteractEvent ) {
         //MainEvent
         if (e.clickedBlock?.type != Material.BARREL) return
         if (e.action != Action.RIGHT_CLICK_BLOCK) return
@@ -32,7 +32,7 @@ class InteractionEvent : Listener {
         //lockRegister
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.lock-item-name") && !checkFileExists(coords)) {
 
-            pl.inventory.removeItem(handItem)
+            handItem.amount = handItem.amount - 1
             pl.updateInventory()
 
             val newID = "${System.currentTimeMillis()}"
@@ -65,12 +65,15 @@ class InteractionEvent : Listener {
             e.isCancelled = true
             return
         }
+        val keysNames = config.getStringList("itemOptions.key-items-names")
         //keyRegister
-        if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == false) {
+        if (keysNames.contains(handItem.itemMeta?.displayName) && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == false) {
             val meta: ItemMeta? = handItem.itemMeta
+
             //TODO PlaceHolderApi Support
-            val nickname = formatColor(config.getString("itemOptions.creator-line")!!).replace("{player}", pl.name)
-            meta!!.lore = (listOf(cacheChest[coords]!!.id, nickname))
+
+            val creatorLore = formatColor(config.getString("itemOptions.creator-in-lore")!!.replace("{player}", e.player.name))
+            meta!!.lore = (listOf(cacheChest[coords]!!.id, creatorLore))
             meta.addEnchant(Enchantment.LOYALTY, 1, true)
             handItem.itemMeta = meta
 
@@ -86,7 +89,7 @@ class InteractionEvent : Listener {
         }
 
         //if item lore contains ID, the chest will be open
-        if (handItem.itemMeta?.lore?.contains(cacheChest[coords]) == false) {
+        if (handItem.itemMeta?.lore?.get(0) == cacheChest[coords]!!.id) {
             return
         }
         else {

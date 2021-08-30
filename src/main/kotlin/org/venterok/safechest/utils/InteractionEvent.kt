@@ -1,6 +1,8 @@
 package org.venterok.safechest.utils
 
 import org.bukkit.Material
+import org.bukkit.Particle
+import org.bukkit.Sound
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -16,6 +18,8 @@ import org.venterok.safechest.objects.DataHelp.Companion.checkFileExists
 import org.venterok.safechest.objects.DataHelp.Companion.chestFileSet
 import org.venterok.safechest.objects.DataHelp.Companion.chestInfoGet
 import org.venterok.safechest.objects.DataHelp.Companion.chestKeyInfoSet
+import org.venterok.safechest.objects.DataHelp.Companion.randomChance
+import java.util.*
 
 
 class InteractionEvent : Listener {
@@ -41,7 +45,7 @@ class InteractionEvent : Listener {
             chestFileSet(coords, newID, pl.name, false)
             cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, newID, false)
 
-            pl.sendMessage(formatColor(config.getString("message.lock-setup")!!.replace("{id}", newID.toString())))
+            pl.sendMessage(formatColor(config.getString("message.lock-setup")!!.replace("{id}", newID)))
 
             e.isCancelled = true
             return
@@ -54,6 +58,35 @@ class InteractionEvent : Listener {
             val status = chestInfoGet().getBoolean("$coords.key-created-before")
             cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, id, status)
         }
+        val id = handItem.itemMeta?.lore?.get(0)?.drop(7)
+
+        //latchKeyFeature
+        if (handItem.itemMeta?.displayName == config.getString("latchKeyFeature.crowbar-item-name")) {
+
+            val messageEnabled = config.getBoolean("crowbarFeature.message-enabled")
+
+            if (randomChance(config.getInt("latchKeyFeature.chance"))) {
+                if (messageEnabled) { pl.sendMessage(formatColor(config.getString("message.latchKey-success")!!)) }
+
+                val sound = config.getString("crowbarFeature.sound")
+                val pitch = config.getLong("latchKeyFeature.sound-pitch").toFloat()
+                val volume = config.getLong("latchKeyFeature.sound-volume").toFloat()
+
+                pl.world.playSound(e.clickedBlock!!.location, Sound.valueOf(sound!!), pitch, volume)
+                return
+            }
+            else {
+
+                if (messageEnabled) {pl.sendMessage(formatColor(config.getString("message.latchKey-fail")!!))}
+                pl.playSound(pl.location, Sound.ENTITY_ITEM_BREAK, 1.0.toFloat(), Random().nextFloat())
+                pl.spawnParticle(Particle.ITEM_CRACK, pl.location.add(pl.location.toVector().normalize().multiply(0.5f)), 20, handItem)
+
+                handItem.amount = 0
+                pl.updateInventory()
+                e.isCancelled = true
+            }
+        }
+
         //key-Already-Bound
         if (handItem.itemMeta?.displayName == config.getString("itemOptions.key-item-name") && handItem.itemMeta?.hasLore() == false && cacheChest[coords]?.kc == true) {
             pl.sendMessage(formatColor(config.getString("message.key-already-bound")!!))
@@ -90,15 +123,16 @@ class InteractionEvent : Listener {
             e.isCancelled = true
             return
         }
+        //BarrelOpen
         if (!handItem.itemMeta?.hasLore()!!) {
             e.isCancelled = true
             return }
-        val id = handItem.itemMeta?.lore?.get(0)?.drop(7)
 
         if (id == cacheChest[coords]!!.id) {
             return
         }
         else {
+            //Need Bind Key
             if (cacheChest.containsKey(coords) && cacheChest[coords]?.kc == false) {
                 pl.sendMessage(formatColor(config.getString("message.need-bind-key")!!))
                 e.isCancelled = true

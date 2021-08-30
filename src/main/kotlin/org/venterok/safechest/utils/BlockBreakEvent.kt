@@ -24,9 +24,9 @@ class BlockBreakEvent : Listener {
 
         val pl = e.player
         if (!cacheChest.containsKey(coords) || pl.gameMode == GameMode.CREATIVE) return
-        val messageEnabled = config.getBoolean("crowbarFeature.message-enabled")
 
         if (pl.inventory.itemInMainHand.itemMeta?.displayName == config.getString("crowbarFeature.crowbar-item-name")) {
+            val messageEnabled = config.getBoolean("crowbarFeature.message-enabled")
             if (randomChance(config.getInt("crowbarFeature.chance"))) {
 
                 val sound = config.getString("crowbarFeature.sound")
@@ -34,13 +34,14 @@ class BlockBreakEvent : Listener {
                 val volume = config.getLong("crowbarFeature.sound-volume").toFloat()
 
                 pl.world.playSound(e.block.location, Sound.valueOf(sound!!), pitch, volume)
-                if(messageEnabled) { pl.sendMessage(formatColor(config.getString("message.crowbar-succes")!!)) }
+                if(messageEnabled) { pl.sendMessage(formatColor(config.getString("message.crowbar-success")!!)) }
 
                 return
 
             } else {
-                e.isCancelled = true
                 if(messageEnabled) { pl.sendMessage(formatColor(config.getString("message.crowbar-fail")!!)) }
+
+                e.isCancelled = true
             }
         } else e.isCancelled = true
 

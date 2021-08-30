@@ -16,6 +16,14 @@ crowbarFeature:
   chance: 25
   message-enabled: true
 
+latchKeyFeature:
+  crowbar-item-name: "Отмычка"
+  sound: ---
+  sound-volume: 50
+  sound-pitch: 50
+  chance: 25
+  message-enabled: true
+
 message:
   lock-setup: "#A5D856Замок установлен с #F2E9E4{id} #A5D856id"
   key-setup: "#A5D856Ключ привязан к #F2E9E4{id} #A5D856id"
@@ -23,8 +31,10 @@ message:
   key-already-bound: "#ED4343Ключ уже привязан"
   lock-already-bound: "#ED4343Замок уже привязан"
   need-bind-key: "#ED4343Нужно привязать ключ"
-  crowbar-succes: "#A5D856Удалось сломать хранилище"
+  crowbar-success: "#A5D856Удалось сломать хранилище"
   crowbar-fail: "#ED4343Не удалось сломать хранилище"
+  latchKey-success: "#A5D856Удалось сломать хранилище"
+  latchKey-fail: "#ED4343Не удалось сломать хранилище"
 
 
 

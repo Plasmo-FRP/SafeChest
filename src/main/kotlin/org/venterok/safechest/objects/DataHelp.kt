@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.venterok.safechest.Safechest
 import org.venterok.safechest.utils.PlayerChest
 import java.io.File
+import kotlin.random.Random
 
 class DataHelp {
     companion object {
@@ -45,6 +46,16 @@ class DataHelp {
 
             data.set(name, null)
             data.save(file)
+        }
+        fun randomChance(chance: Int): Boolean {
+            var trueOrFalse = false
+            if (chance != 100) {
+                val chanceRand = Random.nextInt(1, 100)
+                if (chanceRand < chance) {
+                    trueOrFalse = true
+                }
+            } else trueOrFalse = true
+            return trueOrFalse
         }
     }
 }

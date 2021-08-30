@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.ItemMeta
 import org.venterok.safechest.Safechest.Companion.formatColor
 import org.venterok.safechest.objects.ConfigVal.Companion.config
@@ -72,9 +73,11 @@ class InteractionEvent : Listener {
 
             //TODO PlaceHolderApi Support
 
-            val creatorLore = formatColor(config.getString("itemOptions.creator-in-lore")!!.replace("{player}", e.player.name))
-            meta!!.lore = (listOf(cacheChest[coords]!!.id, creatorLore))
+            val idLore = formatColor(config.getString("itemOptions.id-in-lore")!!.replace("{id}", cacheChest[coords]!!.id))
+            val creatorLore = formatColor(config.getString("itemOptions.original-lore")!!.replace("{player}", e.player.name))
+            meta!!.lore = (listOf(idLore,"", creatorLore))
             meta.addEnchant(Enchantment.LOYALTY, 1, true)
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             handItem.itemMeta = meta
 
             pl.updateInventory()
@@ -87,9 +90,12 @@ class InteractionEvent : Listener {
             e.isCancelled = true
             return
         }
+        if (!handItem.itemMeta?.hasLore()!!) {
+            e.isCancelled = true
+            return }
+        val id = handItem.itemMeta?.lore?.get(0)?.drop(7)
 
-        //if item lore contains ID, the chest will be open
-        if (handItem.itemMeta?.lore?.get(0) == cacheChest[coords]!!.id) {
+        if (id == cacheChest[coords]!!.id) {
             return
         }
         else {
@@ -101,7 +107,6 @@ class InteractionEvent : Listener {
                 pl.sendMessage(formatColor(config.getString("message.chest-closed")!!))
                 e.isCancelled = true
             }
-
         }
     }
 }

@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.ItemMeta
 import org.venterok.safechest.Safechest.Companion.formatColor
+import org.venterok.safechest.Safechest.Companion.unformatColor
 import org.venterok.safechest.objects.ConfigVal.Companion.config
 import org.venterok.safechest.objects.DataHelp.Companion.cacheChest
 import org.venterok.safechest.objects.DataHelp.Companion.checkFileExists
@@ -58,7 +59,9 @@ class InteractionEvent : Listener {
             val status = chestInfoGet().getBoolean("$coords.key-created-before")
             cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, id, status)
         }
-        val id = handItem.itemMeta?.lore?.get(0)!!
+        val id = handItem.itemMeta?.lore?.get(0)?.let { unformatColor(it) }
+        //removeFormatting
+
 
         //latchKeyFeature
         if (handItem.itemMeta?.displayName == config.getString("latchKeyFeature.crowbar-item-name")) {
@@ -129,11 +132,7 @@ class InteractionEvent : Listener {
             return
         }
 
-        println(id)
-        println(cacheChest[coords]!!.id)
-
         if (id == cacheChest[coords]!!.id) {
-            println(1)
             return
         }
         else {

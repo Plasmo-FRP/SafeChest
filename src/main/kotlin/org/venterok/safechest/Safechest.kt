@@ -44,6 +44,9 @@ class Safechest : JavaPlugin() {
             }
             return ChatColor.translateAlternateColorCodes('&', msg)
         }
+        fun unformatColor(msg: String): String {
+            return ChatColor.stripColor(msg);
+        }
         var inst: Safechest? = null
     }   
     private fun setUpConfig(): File {

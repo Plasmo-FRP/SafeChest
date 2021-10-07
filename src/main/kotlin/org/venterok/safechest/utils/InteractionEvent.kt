@@ -58,7 +58,7 @@ class InteractionEvent : Listener {
             val status = chestInfoGet().getBoolean("$coords.key-created-before")
             cacheChest[coords] = PlayerChest(e.clickedBlock!!.location, id, status)
         }
-        val id = handItem.itemMeta?.lore?.get(0)?.drop(7)
+        val id = handItem.itemMeta?.lore?.get(0)!!
 
         //latchKeyFeature
         if (handItem.itemMeta?.displayName == config.getString("latchKeyFeature.crowbar-item-name")) {
@@ -124,11 +124,16 @@ class InteractionEvent : Listener {
             return
         }
         //BarrelOpen
-        if (!handItem.itemMeta?.hasLore()!!) {
+        if (handItem.itemMeta?.hasLore() == false) {
             e.isCancelled = true
-            return }
+            return
+        }
+
+        println(id)
+        println(cacheChest[coords]!!.id)
 
         if (id == cacheChest[coords]!!.id) {
+            println(1)
             return
         }
         else {

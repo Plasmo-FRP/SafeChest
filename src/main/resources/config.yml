@@ -10,7 +10,7 @@ itemOptions:
 
 crowbarFeature:
   crowbar-item-name: "Монтировка"
-  sound: ---
+  sound: BLOCK_WOODEN_DOOR_OPEN
   sound-volume: 50
   sound-pitch: 50
   chance: 25
@@ -18,7 +18,7 @@ crowbarFeature:
 
 latchKeyFeature:
   crowbar-item-name: "Отмычка"
-  sound: ---
+  sound: BLOCK_WOODEN_TRAPDOOR_CLOSE
   sound-volume: 50
   sound-pitch: 50
   chance: 25
